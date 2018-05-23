@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--import jquery-->
+        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+        <title>test</title>
+        <style>
+            body {
+                font-family: Arial;
+            }
+
+            .given {
+                background-color: #AFFF33;
+            }
+
+            .selected {
+                /*background-color: red;*/
+            }
+
+
+
+            table {
+                background-color: black;
+            }
+            td {
+                height: 50px;
+                width: 50px;
+                background-color: white;
+                text-align: center;
+                font-size: 24px;
+                font-family: Arial;
+            }
+            .playable {
+                height: 50px;
+                width: 50px;
+                background-color: white;
+                text-align: center;
+                font-size: 23px;
+                padding: 0;
+                margin: 0;
+                border: 0px solid;
+                font-family: Arial;
+            }
+
+            .invalid {
+                background-color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <td id="00"></td>
+                <td id="01"></td>
+                <td id="02"></td>
+            </tr>
+            <tr>
+                <td id="10"></td>
+                <td id="11"></td>
+                <td id="12"></td>
+            </tr>
+            <tr>
+                <td id="20"></td>
+                <td id="21"></td>
+                <td id="22"></td>
+            </tr>
+        </table>
+        <!--<input type="text" id="userInput">-->
+        <!--<button id="enterNum" type="button">Enter</button>-->
+        <script>
+            let board = [];
+            let row;
+            let col;
+
+            board[0] = [ , 3,  ]
+            board[1] = [ 4, , 6]
+            board[2] = [  , , 8]
+
+            for (let i = 0; i < 3; i++) {
+                row = i;
+                for (let j = 0; j < 3; j++) {
+                    col = j;
+
+                    $('#'+ row + col).html(board[i][j]);
+                    if (board[i][j]) {
+                        $('#'+i + j).addClass("given")
+                    }
+                    else {
+                        $('#'+i + j).html('<input class="playable" maxlength="1" id="input' + i + j + '"type="text">')
+                    }
+                }
+            }
+
+
+
+            let selectedBox = "";
+            let value;
+            let number;
+
+            $('td').click(function() {
+                console.log("line 101: td click")
+                let tdClass = $(this).attr("class");
+                // console.log(tdClass);
+                if (typeof(tdClass) == "undefined" || !tdClass.includes("given")) {
+                    selectedBox = this
+                    tdId = this.id
+                    row = Math.floor(tdId/10)
+                    col = tdId % 10
+                    console.log("line 109: row: " + row)
+                    console.log("line 110: col: " + col)
+                    // let enteredDigit = false;
+
+
+                    $("input").keypress(function(event){
+                        // console.log("115: enteredDigit: "+ enteredDigit)
+                        number = event.which - 48;
+
+                        console.log("118: digit: " + number);
+                    })
+
+                    let fullValue = $('input' + row + col).val()
+                    console.log("fullValue: " + fullValue)
+
+                    if (number <=9 && number >=1  && fullValue <=9 && !valueUsed(number)) {
+                        board[row][col] = number
+                        // enteredDigit = true;
+                    }
+                    else {
+                        $(this).addClass("invalid");
+                        // console.log("126: enteredDigit: "+ enteredDigit)
+                        console.log("127: valueUsed: " + valueUsed(number))
+                    }
+
+
+
+                    // pressed return
+                    if (this.value == "") {
+                        $(this).removeClass("invalid")
+                    }
+                // })
+
+                }
+
+
+            })
+
+            let fullInput = $('#input' + row + col).val();
+            console.log("fullInput: " + fullInput);
+
+
+
+            $('#enterNum').click(function() {
+                if (!selectedBox) {
+                    alert("select a box first!")
+                }
+                else {
+                    value = $('#userInput').val()
+                    if (!valueUsed(value)) {
+                        selectedBox.innerText = value
+                        board[row][col] = parseInt(value)
+                        $('td').removeClass("selected")
+                    }
+                    else {
+                        alert("Illegal value!")
+                    }
+
+                }
+            })
+
+            function valueUsed(num) {
+                for (let i = 0; i < 3; i++) {
+                    if (board[i].includes(parseInt(num))) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+
+
+
+
+
+        </script>
+    </body>
+</html>
